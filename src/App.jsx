@@ -46,6 +46,9 @@ function ApplicationLayout() {
 
       <header className="mobile-header">
         <Brand variant="sidebar-collapsed" />
+        <span className="header-location mobile-header-location">
+          <span aria-hidden="true">⌖</span> Malawi
+        </span>
         <button
           className="mobile-menu-toggle"
           type="button"

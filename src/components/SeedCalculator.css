@@ -19,8 +19,13 @@
 
 .calculator-title-row {
   display: flex;
+  min-width: 0;
   align-items: center;
   gap: 15px;
+}
+
+.calculator-title-row > div {
+  min-width: 0;
 }
 
 .calculator-icon {
