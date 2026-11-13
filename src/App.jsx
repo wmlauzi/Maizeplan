@@ -1,21 +1,23 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   BrowserRouter,
   Navigate,
   NavLink,
   Route,
   Routes,
-  useLocation,
 } from "react-router-dom";
 import Dashboard from "./components/Dashboard";
 import SeedCalculator from "./components/SeedCalculator";
 import FertiliserCalculator from "./components/FertiliserCalculator";
 import PlantPopulationCalculator from "./components/PlantPopulationCalculator";
+import FarmInputCostCalculator from "./components/FarmInputCostCalculator";
 import BrandLogo from "./components/BrandLogo";
+import { CalculatorResultsContext } from "./components/CalculatorResultsContext";
 
 import "./components/SeedCalculator.css";
 import "./components/FertiliserCalculator.css";
 import "./components/PlantPopulationCalculator.css";
+import "./components/FarmInputCostCalculator.css";
 import "./App.css";
 
 const navigation = [
@@ -23,15 +25,11 @@ const navigation = [
   { label: "Seed Calculator", path: "/seed-calculator", icon: "seed" },
   { label: "Fertiliser Calculator", path: "/fertiliser-calculator", icon: "leaf" },
   { label: "Plant Population", path: "/plant-population", icon: "plants" },
+  { label: "Farm Input Cost Calculator", path: "/farm-input-costs", icon: "cost" },
 ];
 
 function ApplicationLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const location = useLocation();
-
-  useEffect(() => {
-    setMobileMenuOpen(false);
-  }, [location.pathname]);
 
   return (
     <div className="app-shell">
@@ -45,10 +43,10 @@ function ApplicationLayout() {
       </aside>
 
       <header className="mobile-header">
-        <Brand variant="sidebar-collapsed" />
-        <span className="header-location mobile-header-location">
-          <span aria-hidden="true">⌖</span> Malawi
-        </span>
+        <Brand
+          variant="sidebar"
+          onClick={() => setMobileMenuOpen(false)}
+        />
         <button
           className="mobile-menu-toggle"
           type="button"
@@ -64,8 +62,31 @@ function ApplicationLayout() {
       </header>
 
       {mobileMenuOpen && (
-        <div className="mobile-navigation" id="mobile-navigation">
-          <Navigation />
+        <div
+          className="mobile-navigation-backdrop"
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          <aside
+            className="mobile-navigation"
+            id="mobile-navigation"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Mobile navigation"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="mobile-navigation-heading">
+              <span>Navigation</span>
+              <button
+                className="mobile-navigation-close"
+                type="button"
+                aria-label="Close navigation menu"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                ×
+              </button>
+            </div>
+            <Navigation onNavigate={() => setMobileMenuOpen(false)} />
+          </aside>
         </div>
       )}
 
@@ -86,6 +107,7 @@ function ApplicationLayout() {
             <Route path="/seed-calculator" element={<SeedCalculator />} />
             <Route path="/fertiliser-calculator" element={<FertiliserCalculator />} />
             <Route path="/plant-population" element={<PlantPopulationCalculator />} />
+            <Route path="/farm-input-costs" element={<FarmInputCostCalculator />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
@@ -101,9 +123,14 @@ function ApplicationLayout() {
   );
 }
 
-function Brand({ variant }) {
+function Brand({ variant, onClick }) {
   return (
-    <NavLink className="app-brand" to="/" aria-label="iNest Agro dashboard">
+    <NavLink
+      className="app-brand"
+      to="/"
+      aria-label="iNest Agro dashboard"
+      onClick={onClick}
+    >
       <BrandLogo variant={variant} />
     </NavLink>
   );
@@ -114,9 +141,10 @@ const navigationIcons = {
   seed: <><path d="M12 21V10" /><path d="M12 14c-5.3 0-8-2.7-8-8 5.3 0 8 2.7 8 8Z" /><path d="M12 11c0-4.7 2.7-7 8-7 0 5.3-2.7 8-8 8" /></>,
   leaf: <><path d="M20.5 3.5C10 3.5 4 7.5 4 14a6.5 6.5 0 0 0 6.5 6.5c6.5 0 10.5-6 10-17Z" /><path d="M3 21c3-5 7-8 13-11" /></>,
   plants: <><path d="M12 21v-9" /><path d="M12 16c-4.7 0-7-2.3-7-7 4.7 0 7 2.3 7 7Z" /><path d="M12 13c0-4 2.3-6 7-6 0 4.7-2.3 7-7 7" /><path d="M5 21h14" /></>,
+  cost: <><circle cx="12" cy="12" r="9" /><path d="M15 8.5c-.6-.6-1.6-1-3-1-1.7 0-3 .8-3 2s1.3 2 3 2 3 .8 3 2-1.3 2-3 2c-1.4 0-2.4-.4-3-1" /><path d="M12 6v12" /></>,
 };
 
-function Navigation() {
+function Navigation({ onNavigate }) {
   return (
     <nav className="primary-navigation" aria-label="Main navigation">
       <span className="navigation-label">WORKSPACE</span>
@@ -128,6 +156,7 @@ function Navigation() {
           className={({ isActive }) =>
             `navigation-link${isActive ? " active" : ""}`
           }
+          onClick={onNavigate}
         >
           <span className="navigation-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
@@ -142,9 +171,25 @@ function Navigation() {
 }
 
 export default function App() {
+  const [calculatorResults, setCalculatorResults] = useState({
+    seedKg: null,
+    basalFertiliserKg: null,
+    topDressingFertiliserKg: null,
+  });
+  const [farmInputCostValues, setFarmInputCostValues] = useState(null);
+
   return (
     <BrowserRouter>
-      <ApplicationLayout />
+      <CalculatorResultsContext.Provider
+        value={{
+          calculatorResults,
+          setCalculatorResults,
+          farmInputCostValues,
+          setFarmInputCostValues,
+        }}
+      >
+        <ApplicationLayout />
+      </CalculatorResultsContext.Provider>
     </BrowserRouter>
   );
 }

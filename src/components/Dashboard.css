@@ -331,9 +331,6 @@
     grid-template-columns: 1fr 1fr;
   }
 
-  .dashboard-tool-card:last-child {
-    grid-column: span 2;
-  }
 }
 
 @media (max-width: 650px) {

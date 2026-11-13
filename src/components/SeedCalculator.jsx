@@ -1,9 +1,12 @@
 
 import { useState } from "react";
 import { calculateSeedRequirement } from "../src/utils/maizeCalculations";
+import { useCalculatorResults } from "./CalculatorResultsContext";
 import "./SeedCalculator.css";
 
 export default function SeedCalculator() {
+  const { setCalculatorResults, setFarmInputCostValues } =
+    useCalculatorResults();
   const [area, setArea] = useState("1");
   const [population, setPopulation] = useState("50000");
   const [seedSize, setSeedSize] = useState("medium");
@@ -47,6 +50,18 @@ export default function SeedCalculator() {
       });
 
       setResult(calculation);
+      setCalculatorResults((previous) => ({
+        ...previous,
+        seedKg: calculation.seedKg,
+      }));
+      setFarmInputCostValues((previous) =>
+        previous?.seedQuantityFromCalculator
+          ? {
+              ...previous,
+              seedQuantityKg: String(calculation.seedKg),
+            }
+          : previous
+      );
     } catch (err) {
       setError(err.message || "Unable to calculate seed requirement.");
     }

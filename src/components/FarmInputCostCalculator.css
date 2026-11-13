@@ -1,0 +1,258 @@
+.farm-input-cost-calculator {
+  width: 100%;
+  max-width: 930px;
+  margin: 14px auto;
+  padding: clamp(22px, 4vw, 38px);
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  background: var(--white);
+  color: var(--ink);
+  box-shadow: 0 8px 26px rgb(22 61 43 / 4%);
+}
+
+.cost-heading {
+  margin-bottom: 26px;
+}
+
+.cost-page-icon {
+  background: #eaf3e8;
+}
+
+.cost-label {
+  color: var(--growth);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.cost-heading h2 {
+  margin: 5px 0 0;
+  color: var(--forest);
+  font-size: clamp(22px, 3vw, 27px);
+  letter-spacing: -0.75px;
+}
+
+.cost-heading > p {
+  max-width: 630px;
+  margin: 17px 0 0;
+  color: var(--slate);
+  font-size: 12px;
+  line-height: 1.75;
+}
+
+.cost-sections {
+  display: grid;
+  gap: 20px;
+}
+
+.cost-section {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid #edf0eb;
+  border-radius: 11px;
+  background: #fff;
+}
+
+.cost-section-heading {
+  margin-bottom: 16px;
+}
+
+.cost-section-heading h3 {
+  margin: 0;
+  color: var(--forest);
+  font-family: var(--heading-font);
+  font-size: 15px;
+}
+
+.cost-section-heading p {
+  margin: 5px 0 0;
+  color: var(--slate);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.cost-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 20px;
+}
+
+.cost-extra-row {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+}
+
+.cost-field {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.cost-field label {
+  color: #34473a;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.cost-field input {
+  width: 100%;
+  min-width: 0;
+  min-height: 45px;
+  padding: 0 12px;
+  border: 1px solid #dce4dc;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 13px;
+}
+
+.cost-field input:focus {
+  border-color: var(--growth);
+  outline: none;
+  box-shadow: 0 0 0 3px rgb(47 143 87 / 12%);
+}
+
+.cost-field input[aria-invalid="true"] {
+  border-color: #b42318;
+}
+
+.cost-field input:disabled {
+  background: #f3f5f1;
+  color: #7b877e;
+}
+
+.cost-field-error {
+  color: #b42318;
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.cost-source-note {
+  margin: 12px 0 0;
+  color: #397b4d;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.budget-summary {
+  margin-top: 22px;
+  padding: 22px;
+  border: 1px solid #d4e5d3;
+  border-radius: 12px;
+  background: var(--sage);
+}
+
+.budget-summary-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.budget-summary-heading h3 {
+  margin: 5px 0 0;
+  color: var(--forest);
+  font-size: 19px;
+}
+
+.cost-reset-button {
+  min-height: 40px;
+  padding: 0 15px;
+  border: 1px solid #a9c5ab;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--forest);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.cost-reset-button:hover {
+  background: #f3f8f2;
+}
+
+.budget-breakdown {
+  margin: 0;
+}
+
+.budget-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid rgb(47 143 87 / 16%);
+  font-size: 12px;
+}
+
+.budget-line dt {
+  color: #526e59;
+}
+
+.budget-line dd {
+  margin: 0;
+  color: var(--forest);
+  font-weight: 600;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.budget-grand-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 17px;
+  padding-top: 16px;
+  border-top: 1px solid rgb(47 143 87 / 25%);
+}
+
+.budget-grand-total span {
+  color: var(--forest);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.budget-grand-total strong {
+  color: var(--forest);
+  font-family: var(--heading-font);
+  font-size: clamp(20px, 4vw, 29px);
+  letter-spacing: -0.5px;
+  text-align: right;
+}
+
+.budget-validation-message {
+  margin: 0;
+  color: #b42318;
+  font-size: 12px;
+}
+
+.cost-disclaimer {
+  margin: 18px 0 0;
+  color: var(--slate);
+  font-size: 10px;
+  line-height: 1.7;
+}
+
+@media (max-width: 767px) {
+  .farm-input-cost-calculator {
+    padding: 20px 17px;
+  }
+
+  .cost-section {
+    padding: 15px;
+  }
+
+  .cost-grid,
+  .cost-extra-row {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .budget-summary {
+    padding: 18px;
+  }
+}

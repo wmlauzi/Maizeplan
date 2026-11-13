@@ -38,7 +38,7 @@
   letter-spacing: -0.5px;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 767px) {
   .population-result-grid {
     grid-template-columns: 1fr;
   }

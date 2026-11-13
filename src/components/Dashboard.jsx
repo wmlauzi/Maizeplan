@@ -25,12 +25,20 @@ const tools = [
     description: "Estimate plants per hectare from your field spacing and plants per station.",
     icon: "plants",
   },
+  {
+    path: "/farm-input-costs",
+    category: "BUDGET PLANNER",
+    title: "Farm Input Cost Calculator",
+    description: "Estimate how much you need to spend on maize seed, fertiliser, labour and other farm inputs.",
+    icon: "cost",
+  },
 ];
 
 const toolIcons = {
   seed: <><path d="M12 21v-9" /><path d="M12 16c-5.3 0-8-2.7-8-8 5.3 0 8 2.7 8 8Z" /><path d="M12 12c0-4.7 2.7-7 8-7 0 5.3-2.7 8-8 8" /></>,
   leaf: <><path d="M20.5 3.5C10 3.5 4 7.5 4 14a6.5 6.5 0 0 0 6.5 6.5c6.5 0 10.5-6 10-17Z" /><path d="M3 21c3-5 7-8 13-11" /></>,
   plants: <><path d="M12 21v-9" /><path d="M12 16c-4.7 0-7-2.3-7-7 4.7 0 7 2.3 7 7Z" /><path d="M12 13c0-4 2.3-6 7-6 0 4.7-2.3 7-7 7" /><path d="M5 21h14" /></>,
+  cost: <><circle cx="12" cy="12" r="9" /><path d="M15 8.5c-.6-.6-1.6-1-3-1-1.7 0-3 .8-3 2s1.3 2 3 2 3 .8 3 2-1.3 2-3 2c-1.4 0-2.4-.4-3-1" /><path d="M12 6v12" /></>,
 };
 
 export default function Dashboard() {
@@ -70,7 +78,7 @@ export default function Dashboard() {
             <span className="section-eyebrow">YOUR FARMING TOOLS</span>
             <h2>Plan your next move</h2>
           </div>
-          <span className="tools-count"><b>03</b> CALCULATORS</span>
+          <span className="tools-count"><b>04</b> CALCULATORS</span>
         </div>
         <div className="dashboard-tool-grid">
           {tools.map((tool, index) => (

@@ -4,8 +4,11 @@ import {
   calculateCupFertiliserRequirement,
   FERTILISER_CUP_SIZES,
 } from "../src/utils/maizeCalculations";
+import { useCalculatorResults } from "./CalculatorResultsContext";
 
 export default function FertiliserCalculator() {
+  const { setCalculatorResults, setFarmInputCostValues } =
+    useCalculatorResults();
   const [area, setArea] = useState("1");
   const [rowSpacing, setRowSpacing] = useState("90");
   const [stationSpacing, setStationSpacing] = useState("60");
@@ -29,6 +32,25 @@ export default function FertiliserCalculator() {
       });
 
       setResult(calculation);
+      setCalculatorResults((previous) => ({
+        ...previous,
+        [applicationType === "basal"
+          ? "basalFertiliserKg"
+          : "topDressingFertiliserKg"]: calculation.totalKg,
+      }));
+      const quantityKey =
+        applicationType === "basal"
+          ? "basalFertiliserQuantityKg"
+          : "topDressingFertiliserQuantityKg";
+      const linkedKey =
+        applicationType === "basal"
+          ? "basalQuantityFromCalculator"
+          : "topDressingQuantityFromCalculator";
+      setFarmInputCostValues((previous) =>
+        previous?.[linkedKey]
+          ? { ...previous, [quantityKey]: String(calculation.totalKg) }
+          : previous
+      );
     } catch (err) {
       setError(err.message);
     }
