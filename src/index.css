@@ -1,7 +1,9 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap");
+
 :root {
-  font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
-  color: #101b2b;
-  background: #f5f7fa;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  color: #203328;
+  background: #f5f7f1;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -9,20 +11,31 @@
   font-optical-sizing: auto;
   font-weight: 400;
 
-  --deep-navy: #101b2b;
-  --electric-blue: #3295d5;
-  --slate-grey: #64748b;
-  --white: #fff;
+  --forest: #163d2b;
+  --growth: #2f8f57;
+  --sage: #dcebdd;
+  --ivory: #f5f7f1;
+  --white: #ffffff;
+  --slate: #64748b;
+  --ink: #203328;
+  --border: #e5eae2;
+  --heading-font: "Manrope", "Segoe UI", Arial, sans-serif;
 }
 
 * {
   box-sizing: border-box;
 }
 
+html {
+  min-width: 320px;
+  scroll-behavior: smooth;
+}
+
 body {
   min-width: 320px;
   min-height: 100vh;
   margin: 0;
+  background: var(--ivory);
 }
 
 button,
@@ -35,8 +48,15 @@ button:focus-visible,
 a:focus-visible,
 input:focus-visible,
 select:focus-visible {
-  outline: 3px solid rgb(50 149 213 / 55%);
-  outline-offset: 2px;
+  outline: 3px solid rgb(47 143 87 / 45%);
+  outline-offset: 3px;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--heading-font);
 }
 
 #root {

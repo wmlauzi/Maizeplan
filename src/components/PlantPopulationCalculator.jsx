@@ -43,17 +43,29 @@ export default function PlantPopulationCalculator() {
   }
 
   return (
-    <section className="population-calculator">
+    <section className="population-calculator" aria-labelledby="population-title">
       <div className="population-heading">
-        <span className="population-label">MAIZE FARMING TOOL</span>
-        <h2>Plant Population Calculator</h2>
+        <div className="calculator-title-row">
+          <span className="calculator-icon population-page-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 21v-9" /><path d="M12 16c-4.7 0-7-2.3-7-7 4.7 0 7 2.3 7 7Z" /><path d="M12 13c0-4 2.3-6 7-6 0 4.7-2.3 7-7 7" /><path d="M5 21h14" />
+            </svg>
+          </span>
+          <div>
+            <span className="population-label">FIELD ESTIMATOR</span>
+            <h2 id="population-title">Plant Population Calculator</h2>
+          </div>
+        </div>
         <p>
-          Calculate your maize plant population using
-          your field size and planting spacing.
+          Estimate plant numbers from your field size and chosen planting layout.
         </p>
       </div>
 
       <form onSubmit={handleCalculate}>
+        <div className="form-section-heading">
+          <strong>Field layout</strong>
+          <span>Set your spacing and plants per station</span>
+        </div>
         <div className="population-grid">
           <label>
             Field size (hectares)
@@ -110,15 +122,18 @@ export default function PlantPopulationCalculator() {
         </div>
 
         <button type="submit" className="population-button">
-          Calculate plant population
+          Calculate plant population <span aria-hidden="true">→</span>
         </button>
       </form>
 
       {error && <p className="population-error">{error}</p>}
 
       {result && (
-        <div className="population-result">
-          <h3>Estimated plant population</h3>
+        <div className="population-result" aria-live="polite">
+          <div className="result-heading">
+            <span className="result-kicker">YOUR PLANTING ESTIMATE</span>
+            <h3>Estimated plant population</h3>
+          </div>
 
           <div className="population-result-grid">
             <div>
@@ -135,9 +150,7 @@ export default function PlantPopulationCalculator() {
       )}
 
       <p className="population-disclaimer">
-        This is a theoretical plant population based on
-        the selected spacing. Actual established population
-        may be lower due to germination and field losses.
+        This theoretical estimate uses your selected spacing. Actual established population may be lower due to germination and field losses.
       </p>
     </section>
   );

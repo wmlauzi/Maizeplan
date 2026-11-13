@@ -35,17 +35,29 @@ export default function FertiliserCalculator() {
   }
 
   return (
-    <section className="fertiliser-calculator">
+    <section className="fertiliser-calculator" aria-labelledby="fertiliser-title">
       <div className="calculator-heading">
-        <span className="calculator-label">MAIZE FARMING TOOL</span>
-        <h2>Fertiliser Calculator</h2>
+        <div className="calculator-title-row">
+          <span className="calculator-icon fertiliser-page-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20.5 3.5C10 3.5 4 7.5 4 14a6.5 6.5 0 0 0 6.5 6.5c6.5 0 10.5-6 10-17Z" /><path d="M3 21c3-5 7-8 13-11" />
+            </svg>
+          </span>
+          <div>
+            <span className="calculator-label">NUTRIENT PLANNER</span>
+            <h2 id="fertiliser-title">Fertiliser Calculator</h2>
+          </div>
+        </div>
         <p>
-          Calculate fertiliser requirements using your field
-          size, planting spacing and calibrated cup size.
+          Plan a calibrated application using your field size, planting spacing and cup size.
         </p>
       </div>
 
       <form onSubmit={handleCalculate}>
+        <div className="form-section-heading">
+          <strong>Application details</strong>
+          <span>Choose your field layout and application stage</span>
+        </div>
         <div className="calculator-grid">
           <label>
             Field size (hectares)
@@ -112,15 +124,18 @@ export default function FertiliserCalculator() {
         </div>
 
         <button type="submit" className="calculate-button">
-          Calculate fertiliser
+          Calculate fertiliser <span aria-hidden="true">→</span>
         </button>
       </form>
 
       {error && <p className="calculator-error">{error}</p>}
 
       {result && (
-        <div className="calculation-result">
-          <h3>Your fertiliser requirement</h3>
+        <div className="calculation-result" aria-live="polite">
+          <div className="result-heading">
+            <span className="result-kicker">YOUR APPLICATION ESTIMATE</span>
+            <h3>Fertiliser requirement</h3>
+          </div>
 
           <div className="result-grid">
             <div>

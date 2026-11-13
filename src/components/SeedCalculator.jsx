@@ -53,17 +53,29 @@ export default function SeedCalculator() {
   }
 
   return (
-    <section className="seed-calculator">
+    <section className="seed-calculator" aria-labelledby="seed-title">
       <div className="seed-heading">
-        <span className="seed-label">MAIZE FARMING TOOL</span>
-        <h2>Seed Calculator</h2>
+        <div className="calculator-title-row">
+          <span className="calculator-icon seed-page-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 21v-9" /><path d="M12 16c-5.3 0-8-2.7-8-8 5.3 0 8 2.7 8 8Z" /><path d="M12 12c0-4.7 2.7-7 8-7 0 5.3-2.7 8-8 8" />
+            </svg>
+          </span>
+          <div>
+            <span className="seed-label">PLANTING PLANNER</span>
+            <h2 id="seed-title">Seed Calculator</h2>
+          </div>
+        </div>
         <p>
-          Estimate the maize seed required for your field
-          using your target plant population and seed quality.
+          Estimate the maize seed required for your field using your target population and seed quality.
         </p>
       </div>
 
       <form onSubmit={handleCalculate}>
+        <div className="form-section-heading">
+          <strong>Field and seed details</strong>
+          <span>Enter your planned planting information</span>
+        </div>
         <div className="seed-grid">
           <label>
             Field size (hectares)
@@ -127,21 +139,23 @@ export default function SeedCalculator() {
         </div>
 
         <button type="submit" className="seed-calculate-button">
-          Calculate seed requirement
+          Calculate seed requirement <span aria-hidden="true">→</span>
         </button>
       </form>
 
       {error && <p className="seed-error">{error}</p>}
 
       {result && (
-        <div className="seed-result">
-          <h3>Estimated seed requirement</h3>
-          <strong>{result.seedKg.toFixed(2)} kg</strong>
-          <p>
-            Estimated seed needed for {area} hectare(s)
-            at a target population of{" "}
-            {Number(population).toLocaleString()} plants per hectare.
-          </p>
+        <div className="seed-result" aria-live="polite">
+          <div className="result-lead">
+            <span className="result-kicker">ESTIMATED SEED REQUIREMENT</span>
+            <strong>{result.seedKg.toFixed(2)} <small>kg</small></strong>
+            <p>For {area} hectare(s) at {Number(population).toLocaleString()} plants per hectare.</p>
+          </div>
+          <div className="seed-result-note">
+            <span aria-hidden="true">i</span>
+            <p>Estimate includes your selected germination rate and expected field loss.</p>
+          </div>
         </div>
       )}
 
