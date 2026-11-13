@@ -1,0 +1,128 @@
+
+.dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 25px 20px 50px;
+}
+
+.dashboard-hero {
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+  padding: 45px;
+  border-radius: 18px;
+  background: linear-gradient(120deg, #101b2b, #17466a);
+  color: #ffffff;
+}
+
+.dashboard-hero-content {
+  max-width: 650px;
+}
+
+.dashboard-tag {
+  color: #75c4f5;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.dashboard-hero h2 {
+  margin: 16px 0;
+  font-size: clamp(30px, 5vw, 46px);
+  line-height: 1.15;
+}
+
+.dashboard-hero p {
+  max-width: 550px;
+  color: #dbeafe;
+  line-height: 1.7;
+}
+
+.dashboard-button {
+  display: inline-block;
+  margin-top: 18px;
+  padding: 13px 22px;
+  border-radius: 8px;
+  background: #3295d5;
+  color: white;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.dashboard-tools {
+  padding-top: 55px;
+}
+
+.dashboard-section-heading {
+  margin-bottom: 25px;
+}
+
+.dashboard-section-heading span {
+  color: #3295d5;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.dashboard-section-heading h2 {
+  margin: 10px 0;
+  color: #101b2b;
+}
+
+.dashboard-section-heading p {
+  color: #64748b;
+}
+
+.dashboard-tool-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.dashboard-tool-card {
+  display: block;
+  padding: 25px;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #101b2b;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.dashboard-tool-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(16, 27, 43, 0.08);
+}
+
+.dashboard-icon {
+  font-size: 30px;
+}
+
+.dashboard-tool-card h3 {
+  margin: 15px 0 8px;
+}
+
+.dashboard-tool-card p {
+  min-height: 55px;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.dashboard-tool-card strong {
+  display: inline-block;
+  margin-top: 12px;
+  color: #3295d5;
+  font-size: 13px;
+}
+
+@media (max-width: 800px) {
+  .dashboard-tool-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-hero {
+    padding: 30px 22px;
+  }
+}
