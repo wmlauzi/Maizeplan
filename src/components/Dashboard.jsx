@@ -11,6 +11,13 @@ const tools = [
     description: "Estimate the seed needed for your field using population targets and seed quality.",
     icon: "seed",
   },
+   {
+    path: "/plant-population",
+    category: "FIELD ESTIMATOR",
+    title: "Plant Population",
+    description: "Estimate plants per hectare from your field spacing and plants per station.",
+    icon: "plants",
+  },
   {
     path: "/fertiliser-calculator",
     category: "NUTRIENT PLANNER",
@@ -18,13 +25,7 @@ const tools = [
     description: "Plan calibrated basal and top-dressing applications for your planting layout.",
     icon: "leaf",
   },
-  {
-    path: "/plant-population",
-    category: "FIELD ESTIMATOR",
-    title: "Plant Population",
-    description: "Estimate plants per hectare from your field spacing and plants per station.",
-    icon: "plants",
-  },
+ 
   {
     path: "/farm-input-costs",
     category: "BUDGET PLANNER",

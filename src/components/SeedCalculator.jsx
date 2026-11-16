@@ -1,6 +1,8 @@
-
 import { useState } from "react";
-import { calculateSeedRequirement } from "../src/utils/maizeCalculations";
+import { 
+  calculateSeedRequirement,
+  acresToHectares 
+} from "../src/utils/maizeCalculations";
 import { useCalculatorResults } from "./CalculatorResultsContext";
 import "./SeedCalculator.css";
 
@@ -8,6 +10,7 @@ export default function SeedCalculator() {
   const { setCalculatorResults, setFarmInputCostValues } =
     useCalculatorResults();
   const [area, setArea] = useState("1");
+  const [areaUnit, setAreaUnit] = useState("hectares"); // NEW
   const [population, setPopulation] = useState("50000");
   const [seedSize, setSeedSize] = useState("medium");
   const [germination, setGermination] = useState("95");
@@ -21,7 +24,11 @@ export default function SeedCalculator() {
     setResult(null);
 
     try {
-      const fieldAreaHa = Number(area);
+      // Convert to hectares if the user selected acres
+      const fieldAreaHa = areaUnit === "acres" 
+        ? acresToHectares(Number(area)) 
+        : Number(area);
+
       const targetPopulationPerHa = Number(population);
       const germinationRate = Number(germination);
       const fieldLossRate = Number(fieldLoss);
@@ -92,17 +99,32 @@ export default function SeedCalculator() {
           <span>Enter your planned planting information</span>
         </div>
         <div className="seed-grid">
-          <label>
-            Field size (hectares)
-            <input
-              type="number"
-              min="0.01"
-              step="0.01"
-              value={area}
-              onChange={(e) => setArea(e.target.value)}
-              required
-            />
-          </label>
+          
+          {/* UPDATED AREA INPUT */}
+          <div className="input-with-unit">
+            <label>
+              Field size
+              <div style={{ display: "flex", gap: "8px" }}>
+                <input
+                  type="number"
+                  min="0.01"
+                  step="0.01"
+                  value={area}
+                  onChange={(e) => setArea(e.target.value)}
+                  required
+                  style={{ flex: 1 }}
+                />
+                <select 
+                  value={areaUnit} 
+                  onChange={(e) => setAreaUnit(e.target.value)}
+                  style={{ width: "110px" }}
+                >
+                  <option value="hectares">Hectares</option>
+                  <option value="acres">Acres</option>
+                </select>
+              </div>
+            </label>
+          </div>
 
           <label>
             Target population (plants per hectare)
@@ -165,7 +187,7 @@ export default function SeedCalculator() {
           <div className="result-lead">
             <span className="result-kicker">ESTIMATED SEED REQUIREMENT</span>
             <strong>{result.seedKg.toFixed(2)} <small>kg</small></strong>
-            <p>For {area} hectare(s) at {Number(population).toLocaleString()} plants per hectare.</p>
+            <p>For {area} {areaUnit} at {Number(population).toLocaleString()} plants per hectare.</p>
           </div>
           <div className="seed-result-note">
             <span aria-hidden="true">i</span>

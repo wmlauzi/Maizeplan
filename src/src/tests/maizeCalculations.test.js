@@ -219,7 +219,7 @@ describe("Fertiliser cup calculator", () => {
     expect(result.totalBags).toBe(4.5);
   });
 
-  it("rejects unsupported planting spacing", () => {
+  it("rejects ", () => {
     expect(() =>
       calculateCupFertiliserRequirement({
         applicationType: "basal",

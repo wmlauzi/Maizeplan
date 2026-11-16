@@ -1,4 +1,3 @@
-
 /**
  * iNest Maize Planner
  * Agricultural Calculation Engine
@@ -45,13 +44,11 @@ function requirePercentage(value, name) {
 
 export function acresToHectares(acres) {
   requirePositive(acres, "Acres");
-
   return acres / CONSTANTS.ACRES_PER_HECTARE;
 }
 
 export function hectaresToAcres(hectares) {
   requirePositive(hectares, "Hectares");
-
   return hectares * CONSTANTS.ACRES_PER_HECTARE;
 }
 
@@ -112,8 +109,7 @@ export function calculateSeedRequirement({
   requirePercentage(germinationRate, "Germination rate");
   requirePercentage(fieldLossRate, "Field loss rate");
 
-  const actualSeedsPerKg =
-    seedsPerKg ?? SEED_SIZES[seedSize];
+  const actualSeedsPerKg = seedsPerKg ?? SEED_SIZES[seedSize];
 
   requirePositive(actualSeedsPerKg, "Seeds per kilogram");
 
@@ -257,6 +253,7 @@ export function estimateYield({
   };
 }
 
+// 7. FERTILISER CUP CALCULATOR
 
 export const FERTILISER_CUP_SIZES = [5, 8, 12, 16, 22];
 
@@ -294,19 +291,44 @@ export function calculateCupFertiliserRequirement({
     throw new Error("Field area must be greater than zero.");
   }
 
-  const spacingKey = `${rowSpacingCm}x${stationSpacingCm}`;
-  const rates = FERTILISER_CUP_TABLES[applicationType][spacingKey];
-
-  if (!rates) {
-    throw new Error("Unsupported planting spacing.");
-  }
-
   const cupIndex = FERTILISER_CUP_SIZES.indexOf(cupSize);
-
   if (cupIndex === -1) {
     throw new Error("Unsupported fertiliser cup size.");
   }
 
+  const spacingKey = `${rowSpacingCm}x${stationSpacingCm}`;
+  let rates = FERTILISER_CUP_TABLES[applicationType][spacingKey];
+
+  // FALLBACK: If the exact spacing isn't in the hardcoded table, calculate it dynamically
+  if (!rates) {
+    // 1. Calculate the area of a single plant station in square meters
+    const areaPerPlantM2 = (rowSpacingCm / 100) * (stationSpacingCm / 100);
+    
+    // 2. Calculate how many stations fit in one hectare
+    const stationsPerHa = CONSTANTS.SQ_METRES_PER_HECTARE / areaPerPlantM2;
+
+    // 3. Define exact grams of fertiliser per cup based on the 100x50 baseline table
+    const gramsPerCup = applicationType === "basal" 
+      ? [6.25, 10, 13.75, 18.75, 26.25]
+      : [5, 7.5, 12.5, 16.25, 22.5];
+
+    const gramsPerStation = gramsPerCup[cupIndex];
+    
+    // 4. Calculate the final rate in kg/ha
+    const calculatedRate = (stationsPerHa * gramsPerStation) / 1000;
+    const rateKgPerHa = Math.round(calculatedRate);
+
+    const totalKg = rateKgPerHa * fieldAreaHa;
+
+    return {
+      rateKgPerHa,
+      totalKg: Number(totalKg.toFixed(2)),
+      bagsPerHa: Number((rateKgPerHa / 50).toFixed(2)),
+      totalBags: Number((totalKg / 50).toFixed(2)),
+    };
+  }
+
+  // STANDARD PATH: Use the hardcoded table data
   const rateKgPerHa = rates[cupIndex];
   const totalKg = rateKgPerHa * fieldAreaHa;
 

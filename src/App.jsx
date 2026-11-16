@@ -22,9 +22,9 @@ import "./App.css";
 
 const navigation = [
   { label: "Dashboard", path: "/", icon: "grid" },
+  { label: "Plant Population", path: "/plant-population", icon: "plants" },
   { label: "Seed Calculator", path: "/seed-calculator", icon: "seed" },
   { label: "Fertiliser Calculator", path: "/fertiliser-calculator", icon: "leaf" },
-  { label: "Plant Population", path: "/plant-population", icon: "plants" },
   { label: "Farm Input Cost Calculator", path: "/farm-input-costs", icon: "cost" },
 ];
 

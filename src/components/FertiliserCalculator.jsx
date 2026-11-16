@@ -1,8 +1,8 @@
-
 import { useState } from "react";
 import {
   calculateCupFertiliserRequirement,
   FERTILISER_CUP_SIZES,
+  acresToHectares 
 } from "../src/utils/maizeCalculations";
 import { useCalculatorResults } from "./CalculatorResultsContext";
 
@@ -10,6 +10,7 @@ export default function FertiliserCalculator() {
   const { setCalculatorResults, setFarmInputCostValues } =
     useCalculatorResults();
   const [area, setArea] = useState("1");
+  const [areaUnit, setAreaUnit] = useState("hectares"); // NEW
   const [rowSpacing, setRowSpacing] = useState("90");
   const [stationSpacing, setStationSpacing] = useState("60");
   const [applicationType, setApplicationType] = useState("basal");
@@ -23,12 +24,17 @@ export default function FertiliserCalculator() {
     setResult(null);
 
     try {
+      // Convert to hectares if the user selected acres
+      const fieldAreaHa = areaUnit === "acres" 
+        ? acresToHectares(Number(area)) 
+        : Number(area);
+
       const calculation = calculateCupFertiliserRequirement({
         applicationType,
         rowSpacingCm: Number(rowSpacing),
         stationSpacingCm: Number(stationSpacing),
         cupSize: Number(cupSize),
-        fieldAreaHa: Number(area),
+        fieldAreaHa: fieldAreaHa,
       });
 
       setResult(calculation);
@@ -81,17 +87,32 @@ export default function FertiliserCalculator() {
           <span>Choose your field layout and application stage</span>
         </div>
         <div className="calculator-grid">
-          <label>
-            Field size (hectares)
-            <input
-              type="number"
-              min="0.01"
-              step="0.01"
-              value={area}
-              onChange={(e) => setArea(e.target.value)}
-              required
-            />
-          </label>
+          
+          {/* UPDATED AREA INPUT */}
+          <div className="input-with-unit">
+            <label>
+              Field size
+              <div style={{ display: "flex", gap: "8px" }}>
+                <input
+                  type="number"
+                  min="0.01"
+                  step="0.01"
+                  value={area}
+                  onChange={(e) => setArea(e.target.value)}
+                  required
+                  style={{ flex: 1 }}
+                />
+                <select 
+                  value={areaUnit} 
+                  onChange={(e) => setAreaUnit(e.target.value)}
+                  style={{ width: "110px" }}
+                >
+                  <option value="hectares">Hectares</option>
+                  <option value="acres">Acres</option>
+                </select>
+              </div>
+            </label>
+          </div>
 
           <label>
             Row spacing
@@ -116,6 +137,9 @@ export default function FertiliserCalculator() {
               <option value="50">50 cm</option>
               <option value="40">40 cm</option>
               <option value="30">30 cm</option>
+              <option value="25">25 cm</option>
+              <option value="24">24 cm</option>
+              <option value="22">22 cm</option>
             </select>
           </label>
 

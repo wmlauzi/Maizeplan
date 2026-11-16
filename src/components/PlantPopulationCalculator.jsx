@@ -1,6 +1,8 @@
-
 import { useState } from "react";
-import { calculatePlantPopulation } from "../src/utils/maizeCalculations";
+import { 
+  calculatePlantPopulation, 
+  acresToHectares 
+} from "../src/utils/maizeCalculations";
 import "./PlantPopulationCalculator.css";
 
 export default function PlantPopulationCalculator() {
@@ -8,6 +10,7 @@ export default function PlantPopulationCalculator() {
   const [plantSpacing, setPlantSpacing] = useState("60");
   const [plantsPerStation, setPlantsPerStation] = useState("2");
   const [area, setArea] = useState("1");
+  const [areaUnit, setAreaUnit] = useState("hectares"); // NEW
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
 
@@ -17,11 +20,16 @@ export default function PlantPopulationCalculator() {
     setResult(null);
 
     try {
+      // Convert to hectares if the user selected acres
+      const fieldAreaHa = areaUnit === "acres" 
+        ? acresToHectares(Number(area)) 
+        : Number(area);
+
       const calculation = calculatePlantPopulation({
         rowSpacingCm: Number(rowSpacing),
         plantSpacingCm: Number(plantSpacing),
         plantsPerStation: Number(plantsPerStation),
-        fieldAreaHa: Number(area),
+        fieldAreaHa: fieldAreaHa,
       });
 
       const populationPerHa =
@@ -35,7 +43,7 @@ export default function PlantPopulationCalculator() {
 
       setResult({
         plantsPerHa: Math.round(populationPerHa),
-        totalPlants: Math.round(populationPerHa * Number(area)),
+        totalPlants: Math.round(populationPerHa * fieldAreaHa),
       });
     } catch (err) {
       setError(err.message || "Unable to calculate plant population.");
@@ -67,17 +75,31 @@ export default function PlantPopulationCalculator() {
           <span>Set your spacing and plants per station</span>
         </div>
         <div className="population-grid">
-          <label>
-            Field size (hectares)
-            <input
-              type="number"
-              min="0.01"
-              step="0.01"
-              value={area}
-              onChange={(e) => setArea(e.target.value)}
-              required
-            />
-          </label>
+          {/* UPDATED AREA INPUT */}
+          <div className="input-with-unit">
+            <label>
+              Field size
+              <div style={{ display: "flex", gap: "8px" }}>
+                <input
+                  type="number"
+                  min="0.01"
+                  step="0.01"
+                  value={area}
+                  onChange={(e) => setArea(e.target.value)}
+                  required
+                  style={{ flex: 1 }}
+                />
+                <select 
+                  value={areaUnit} 
+                  onChange={(e) => setAreaUnit(e.target.value)}
+                  style={{ width: "110px" }}
+                >
+                  <option value="hectares">Hectares</option>
+                  <option value="acres">Acres</option>
+                </select>
+              </div>
+            </label>
+          </div>
 
           <label>
             Row spacing
