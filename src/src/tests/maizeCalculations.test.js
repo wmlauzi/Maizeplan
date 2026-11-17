@@ -82,6 +82,25 @@ describe("iNest Maize Planner - Calculation Engine", () => {
       expect(result.bagsToPurchase).toBe(2);
     });
 
+    it.each([1, 2, 3])(
+      "accounts for %i seeds per planting station without changing target plants",
+      (seedsPerStation) => {
+        const result = calculateSeedRequirement({
+          fieldAreaHa: 1,
+          targetPopulationPerHa: 50000,
+          seedSize: "medium",
+          seedsPerStation,
+        });
+
+        expect(result.requiredEstablishedPlants).toBe(50000);
+        expect(result.seedsPerStation).toBe(seedsPerStation);
+        expect(result.seedKg).toBeCloseTo(
+          (50000 / (0.95 * 0.95 * 2100)) * seedsPerStation,
+          2
+        );
+      }
+    );
+
     it.each([37000, 40000, 45000, 50000, 55000])(
       "calculates seed requirements for a target population of %i plants per hectare",
       (targetPopulationPerHa) => {

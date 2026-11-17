@@ -100,11 +100,17 @@ export function calculateSeedRequirement({
   targetPopulationPerHa,
   seedSize = "medium",
   seedsPerKg,
+  seedsPerStation = 1,
   germinationRate = 95,
   fieldLossRate = 5,
 }) {
   requirePositive(fieldAreaHa, "Field area");
   requirePositive(targetPopulationPerHa, "Target population");
+  requirePositive(seedsPerStation, "Seeds per planting station");
+
+  if (![1, 2, 3].includes(seedsPerStation)) {
+    throw new Error("Seeds per planting station must be 1, 2, or 3.");
+  }
 
   requirePercentage(germinationRate, "Germination rate");
   requirePercentage(fieldLossRate, "Field loss rate");
@@ -125,7 +131,7 @@ export function calculateSeedRequirement({
     fieldAreaHa * targetPopulationPerHa;
 
   const seedsRequired =
-    requiredEstablishedPlants / survivalRate;
+    (requiredEstablishedPlants / survivalRate) * seedsPerStation;
 
   const seedKg = seedsRequired / actualSeedsPerKg;
 
@@ -139,6 +145,7 @@ export function calculateSeedRequirement({
     bagsToPurchase: Math.ceil(seedKg / 25),
     seedSize,
     seedsPerKg: actualSeedsPerKg,
+    seedsPerStation,
   };
 }
 
