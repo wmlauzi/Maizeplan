@@ -173,6 +173,7 @@ export function calculateFertiliserRequirement({
 }
 
 // 5. GUIDE-BASED FERTILISER RECOMMENDATIONS
+//First array translation: 0-3 t/ha yield = basal(0-150), top dressing(50-150)
 
 export const FERTILISER_GUIDE = [
   {
