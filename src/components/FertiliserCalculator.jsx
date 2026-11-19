@@ -161,6 +161,7 @@ export default function FertiliserCalculator() {
               <option value="40">40 cm</option>
               <option value="30">30 cm</option>
               <option value="25">25 cm</option>
+              <option value="25">25 cm</option>
               <option value="24">24 cm</option>
               <option value="22">22 cm</option>
             </select>
