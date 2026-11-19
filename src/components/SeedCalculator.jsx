@@ -12,16 +12,24 @@ export default function SeedCalculator() {
   const [area, setArea] = useState("1");
   const [areaUnit, setAreaUnit] = useState("hectares"); // NEW
   const [population, setPopulation] = useState("50000");
-  const [seedsPerStation, setSeedsPerStation] = useState("1");
   const [seedSize, setSeedSize] = useState("medium");
   const [germination, setGermination] = useState("95");
   const [fieldLoss, setFieldLoss] = useState("5");
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
 
-  function calculate(seedCountPerStation = Number(seedsPerStation)) {
+  function calculate() {
     setError("");
     setResult(null);
+    setCalculatorResults((previous) => ({
+      ...previous,
+      seedKg: null,
+    }));
+    setFarmInputCostValues((previous) =>
+      previous?.seedQuantityFromCalculator
+        ? { ...previous, seedQuantityKg: "" }
+        : previous
+    );
 
     try {
       // Convert to hectares if the user selected acres
@@ -52,7 +60,6 @@ export default function SeedCalculator() {
         fieldAreaHa,
         targetPopulationPerHa,
         seedSize,
-        seedsPerStation: seedCountPerStation,
         germinationRate,
         fieldLossRate,
       });
@@ -145,22 +152,6 @@ export default function SeedCalculator() {
           </label>
 
           <label>
-            Seeds per planting station
-            <select
-              value={seedsPerStation}
-              onChange={(event) => {
-                const value = event.target.value;
-                setSeedsPerStation(value);
-                if (result) calculate(Number(value));
-              }}
-            >
-              <option value="1">1 seed per station</option>
-              <option value="2">2 seeds per station</option>
-              <option value="3">3 seeds per station</option>
-            </select>
-          </label>
-
-          <label>
             Seed size
             <select
               value={seedSize}
@@ -210,7 +201,6 @@ export default function SeedCalculator() {
             <span className="result-kicker">ESTIMATED SEED REQUIREMENT</span>
             <strong>{result.seedKg.toFixed(2)} <small>kg</small></strong>
             <p>For {area} {areaUnit} at {Number(population).toLocaleString()} plants per hectare.</p>
-            <p>Sowing {result.seedsPerStation} {result.seedsPerStation === 1 ? "seed" : "seeds"} per planting station.</p>
           </div>
           <div className="seed-result-note">
             <span aria-hidden="true">i</span>
