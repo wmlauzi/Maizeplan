@@ -1,8 +1,9 @@
 import { useState } from "react";
 import {
   calculateCupFertiliserRequirement,
+  getFertiliserRecommendation,
   FERTILISER_CUP_SIZES,
-  acresToHectares 
+  acresToHectares
 } from "../src/utils/maizeCalculations";
 import { useCalculatorResults } from "./CalculatorResultsContext";
 
@@ -16,7 +17,42 @@ export default function FertiliserCalculator() {
   const [applicationType, setApplicationType] = useState("basal");
   const [cupSize, setCupSize] = useState("12");
   const [result, setResult] = useState(null);
+  const [targetYield, setTargetYield] = useState("4");
+  const [recommendation, setRecommendation] = useState(null);
+  const [recommendationError, setRecommendationError] = useState("");
   const [error, setError] = useState("");
+
+  function handleRecommendation(event) {
+    event.preventDefault();
+    setRecommendationError("");
+    setRecommendation(null);
+
+    try {
+      const fieldAreaHa = areaUnit === "acres"
+        ? acresToHectares(Number(area))
+        : Number(area);
+      const guide = getFertiliserRecommendation(Number(targetYield));
+      const toFieldRange = (range) => ({
+        minKg: Number((range.min * fieldAreaHa).toFixed(2)),
+        maxKg: Number((range.max * fieldAreaHa).toFixed(2)),
+        minBags: Number(((range.min * fieldAreaHa) / 50).toFixed(2)),
+        maxBags: Number(((range.max * fieldAreaHa) / 50).toFixed(2)),
+        minWholeBags: Math.ceil((range.min * fieldAreaHa) / 50),
+        maxWholeBags: Math.ceil((range.max * fieldAreaHa) / 50),
+      });
+
+      setRecommendation({
+        fieldAreaHa,
+        yieldTarget: Number(targetYield),
+        basal: toFieldRange(guide.basalKgPerHa),
+        topDressing: toFieldRange(guide.topDressingKgPerHa),
+        source: guide.source,
+        note: guide.note,
+      });
+    } catch (err) {
+      setRecommendationError(err.message);
+    }
+  }
 
   function handleCalculate(event) {
     event.preventDefault();
@@ -206,6 +242,64 @@ export default function FertiliserCalculator() {
           </p>
         </div>
       )}
+
+      <section className="fertiliser-guide-planner" aria-labelledby="fertiliser-guide-title">
+        <div className="form-section-heading">
+          <strong id="fertiliser-guide-title">Yield-based fertiliser planning</strong>
+          <span>Estimate basal and top-dressing quantities from the existing growers' guide ranges</span>
+        </div>
+
+        <form onSubmit={handleRecommendation}>
+          <div className="calculator-grid">
+            <label>
+              Target yield
+              <div className="input-with-unit">
+                <input
+                  type="number"
+                  min="0.1"
+                  step="0.1"
+                  value={targetYield}
+                  onChange={(event) => setTargetYield(event.target.value)}
+                  required
+                />
+                <span>tonnes/ha</span>
+              </div>
+            </label>
+          </div>
+          <button type="submit" className="calculate-button">
+            Estimate fertiliser plan <span aria-hidden="true">→</span>
+          </button>
+        </form>
+
+        {recommendationError && (
+          <p className="calculator-error" role="alert">{recommendationError}</p>
+        )}
+
+        {recommendation && (
+          <div className="calculation-result" aria-live="polite">
+            <div className="result-heading">
+              <span className="result-kicker">FIELD REQUIREMENT RANGE</span>
+              <h3>{recommendation.fieldAreaHa.toFixed(2)} ha · {recommendation.yieldTarget} t/ha target</h3>
+            </div>
+            <div className="guide-range-grid">
+              <div className="guide-range-card">
+                <span>Basal fertiliser</span>
+                <strong>{recommendation.basal.minKg}–{recommendation.basal.maxKg} kg</strong>
+                <small>{recommendation.basal.minBags}–{recommendation.basal.maxBags} × 50 kg bags</small>
+                <small>Buy {recommendation.basal.minWholeBags}–{recommendation.basal.maxWholeBags} full bags</small>
+              </div>
+              <div className="guide-range-card">
+                <span>Top dressing</span>
+                <strong>{recommendation.topDressing.minKg}–{recommendation.topDressing.maxKg} kg</strong>
+                <small>{recommendation.topDressing.minBags}–{recommendation.topDressing.maxBags} × 50 kg bags</small>
+                <small>Buy {recommendation.topDressing.minWholeBags}–{recommendation.topDressing.maxWholeBags} full bags</small>
+              </div>
+            </div>
+            <p>{recommendation.note}</p>
+            <p className="guide-source">Reference label: {recommendation.source}. Confirm the rate and fertiliser formulation with a local extension officer or soil-test recommendation before purchasing.</p>
+          </div>
+        )}
+      </section>
 
       <p className="calculator-disclaimer">
         Important: These figures reproduce the guide's
