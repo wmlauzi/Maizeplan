@@ -1,7 +1,8 @@
 import { useState } from "react";
 import {
   calculateCupFertiliserRequirement,
-  getFertiliserRecommendation,
+  getMalawiMaizeFertiliserRecommendation,
+  MALAWI_MAIZE_FERTILISER_GUIDE,
   FERTILISER_CUP_SIZES,
   acresToHectares
 } from "../src/utils/maizeCalculations";
@@ -17,7 +18,9 @@ export default function FertiliserCalculator() {
   const [applicationType, setApplicationType] = useState("basal");
   const [cupSize, setCupSize] = useState("12");
   const [result, setResult] = useState(null);
-  const [targetYield, setTargetYield] = useState("4");
+  const [selectedAdd, setSelectedAdd] = useState("Blantyre");
+  const [selectedGuideArea, setSelectedGuideArea] = useState("");
+  const [productionPurpose, setProductionPurpose] = useState("home");
   const [recommendation, setRecommendation] = useState(null);
   const [recommendationError, setRecommendationError] = useState("");
   const [error, setError] = useState("");
@@ -26,29 +29,13 @@ export default function FertiliserCalculator() {
     event.preventDefault();
     setRecommendationError("");
     setRecommendation(null);
-
     try {
-      const fieldAreaHa = areaUnit === "acres"
-        ? acresToHectares(Number(area))
-        : Number(area);
-      const guide = getFertiliserRecommendation(Number(targetYield));
-      const toFieldRange = (range) => ({
-        minKg: Number((range.min * fieldAreaHa).toFixed(2)),
-        maxKg: Number((range.max * fieldAreaHa).toFixed(2)),
-        minBags: Number(((range.min * fieldAreaHa) / 50).toFixed(2)),
-        maxBags: Number(((range.max * fieldAreaHa) / 50).toFixed(2)),
-        minWholeBags: Math.ceil((range.min * fieldAreaHa) / 50),
-        maxWholeBags: Math.ceil((range.max * fieldAreaHa) / 50),
+      const guide = getMalawiMaizeFertiliserRecommendation({
+        add: selectedAdd,
+        area: selectedGuideArea,
+        productionPurpose,
       });
-
-      setRecommendation({
-        fieldAreaHa,
-        yieldTarget: Number(targetYield),
-        basal: toFieldRange(guide.basalKgPerHa),
-        topDressing: toFieldRange(guide.topDressingKgPerHa),
-        source: guide.source,
-        note: guide.note,
-      });
+      setRecommendation(guide);
     } catch (err) {
       setRecommendationError(err.message);
     }
@@ -245,58 +232,70 @@ export default function FertiliserCalculator() {
 
       <section className="fertiliser-guide-planner" aria-labelledby="fertiliser-guide-title">
         <div className="form-section-heading">
-          <strong id="fertiliser-guide-title">Yield-based fertiliser planning</strong>
-          <span>Estimate basal and top-dressing quantities from the existing growers' guide ranges</span>
+          <strong id="fertiliser-guide-title">Malawi area-specific fertiliser reference</strong>
+          <span>Look up the nutrient recommendation for your Agricultural Development Division and district/EPA</span>
         </div>
-
         <form onSubmit={handleRecommendation}>
           <div className="calculator-grid">
             <label>
-              Target yield
-              <div className="input-with-unit">
-                <input
-                  type="number"
-                  min="0.1"
-                  step="0.1"
-                  value={targetYield}
-                  onChange={(event) => setTargetYield(event.target.value)}
-                  required
-                />
-                <span>tonnes/ha</span>
-              </div>
+              Agricultural Development Division (ADD)
+              <select value={selectedAdd} onChange={(event) => {
+                setSelectedAdd(event.target.value);
+                setSelectedGuideArea("");
+                setRecommendation(null);
+              }}>
+                {[...new Set(MALAWI_MAIZE_FERTILISER_GUIDE.map((item) => item.add))].map((add) => (
+                  <option key={add} value={add}>{add} ADD</option>
+                ))}
+              </select>
+            </label>
+            <label>
+              District / EPA area
+              <select value={selectedGuideArea} onChange={(event) => {
+                setSelectedGuideArea(event.target.value);
+                setRecommendation(null);
+              }} required>
+                <option value="">Select district / EPA area</option>
+                {MALAWI_MAIZE_FERTILISER_GUIDE.filter((item) => item.add === selectedAdd).map((item) => (
+                  <option key={item.area} value={item.area}>{item.area}</option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Production purpose
+              <select value={productionPurpose} onChange={(event) => {
+                setProductionPurpose(event.target.value);
+                setRecommendation(null);
+              }}>
+                <option value="home">Home consumption</option>
+                <option value="sale">Market sale</option>
+              </select>
             </label>
           </div>
           <button type="submit" className="calculate-button">
-            Estimate fertiliser plan <span aria-hidden="true">→</span>
+            Find area recommendation <span aria-hidden="true">→</span>
           </button>
         </form>
-
         {recommendationError && (
           <p className="calculator-error" role="alert">{recommendationError}</p>
         )}
-
         {recommendation && (
           <div className="calculation-result" aria-live="polite">
             <div className="result-heading">
-              <span className="result-kicker">FIELD REQUIREMENT RANGE</span>
-              <h3>{recommendation.fieldAreaHa.toFixed(2)} ha · {recommendation.yieldTarget} t/ha target</h3>
+              <span className="result-kicker">2021 AREA-SPECIFIC REFERENCE</span>
+              <h3>{recommendation.add} ADD · {recommendation.area}</h3>
             </div>
-            <div className="guide-range-grid">
-              <div className="guide-range-card">
-                <span>Basal fertiliser</span>
-                <strong>{recommendation.basal.minKg}–{recommendation.basal.maxKg} kg</strong>
-                <small>{recommendation.basal.minBags}–{recommendation.basal.maxBags} × 50 kg bags</small>
-                <small>Buy {recommendation.basal.minWholeBags}–{recommendation.basal.maxWholeBags} full bags</small>
-              </div>
-              <div className="guide-range-card">
-                <span>Top dressing</span>
-                <strong>{recommendation.topDressing.minKg}–{recommendation.topDressing.maxKg} kg</strong>
-                <small>{recommendation.topDressing.minBags}–{recommendation.topDressing.maxBags} × 50 kg bags</small>
-                <small>Buy {recommendation.topDressing.minWholeBags}–{recommendation.topDressing.maxWholeBags} full bags</small>
-              </div>
+            <div className="guide-range-card">
+              <span>{recommendation.productionPurpose === "home" ? "Home consumption" : "Market sale"}</span>
+              {recommendation.available ? (
+                <strong>{recommendation.nutrientRecommendation}</strong>
+              ) : (
+                <strong>No recommendation listed (Nil)</strong>
+              )}
+              <small>Nutrient recommendation code (N:P:K + S where specified)</small>
             </div>
             <p>{recommendation.note}</p>
-            <p className="guide-source">Reference label: {recommendation.source}. Confirm the rate and fertiliser formulation with a local extension officer or soil-test recommendation before purchasing.</p>
+            <p className="guide-source">Source: {recommendation.source}. This table does not specify a single product rate in kg/ha. Do not treat the code above as a bag quantity or apply it as a product without confirming the nutrient formulation.</p>
           </div>
         )}
       </section>
