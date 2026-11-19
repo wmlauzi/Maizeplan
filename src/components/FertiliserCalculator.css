@@ -51,3 +51,69 @@
     min-height: 72px;
   }
 }
+
+
+.fertiliser-guide-planner {
+  display: grid;
+  gap: 16px;
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid rgb(47 143 87 / 18%);
+}
+
+.fertiliser-guide-planner .input-with-unit {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fertiliser-guide-planner .input-with-unit span {
+  color: #59715e;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.guide-range-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.guide-range-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 9px;
+  padding: 16px;
+  border: 1px solid rgb(47 143 87 / 16%);
+  border-radius: 9px;
+  background: rgb(255 255 255 / 62%);
+}
+
+.guide-range-card > span {
+  color: #59715e;
+  font-size: 11px;
+}
+
+.guide-range-card strong {
+  color: var(--forest);
+  font-family: var(--heading-font);
+  font-size: clamp(18px, 2.5vw, 23px);
+}
+
+.guide-range-card small {
+  color: #526e59;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.calculation-result .guide-source {
+  padding-top: 10px;
+  border-top: 1px solid rgb(47 143 87 / 13%);
+}
+
+@media (max-width: 767px) {
+  .guide-range-grid {
+    grid-template-columns: 1fr;
+  }
+}
