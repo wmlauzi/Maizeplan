@@ -163,57 +163,57 @@ export function calculateFertiliserRequirement({
   };
 }
 
-// 5. GUIDE-BASED FERTILISER RECOMMENDATIONS
-//First array translation: 0-3 t/ha yield = basal(0-150), top dressing(50-150)
+// 5. MALAWI AREA-SPECIFIC MAIZE FERTILISER REFERENCE
+// Transcribed from Table 15, Guide to Agriculture Production (2021).
+// Values are nutrient recommendations, NOT kg/ha of a single fertiliser product.
 
-export const FERTILISER_GUIDE = [
-  {
-    minYield: 0,
-    maxYield: 3,
-    basal: { min: 0, max: 150 },
-    topDressing: { min: 50, max: 150 },
-  },
-  {
-    minYield: 3,
-    maxYield: 5,
-    basal: { min: 100, max: 250 },
-    topDressing: { min: 100, max: 250 },
-  },
-  {
-    minYield: 5,
-    maxYield: 8,
-    basal: { min: 250, max: 350 },
-    topDressing: { min: 250, max: 350 },
-  },
-  {
-    minYield: 8,
-    maxYield: Infinity,
-    basal: { min: 300, max: 600 },
-    topDressing: { min: 250, max: 500 },
-  },
+export const MALAWI_MAIZE_FERTILISER_GUIDE = [
+  { add: "Karonga", area: "Chitipa District (all EPAs except Misuku)", home: "69:21:0+4S", sale: "35:10:0+2S" },
+  { add: "Karonga", area: "Misuku EPA, Chitipa", home: "69:21:0+4S", sale: null },
+  { add: "Karonga", area: "Karonga District", home: "35:10:0+2S", sale: null },
+  { add: "Mzuzu", area: "Mpherembe, Bwengu, Zombwe and Bolero EPAs, Mzimba", home: "92:21:0+4S", sale: "35:10:0+2S" },
+  { add: "Mzuzu", area: "Mhuju and Phoka/Nchenachena EPAs, Mzimba", home: "69:21:0+4S", sale: null },
+  { add: "Mzuzu", area: "Central Mzimba", home: "92:21:0+4S", sale: "35:10:0+2S" },
+  { add: "Mzuzu", area: "South Mzimba", home: "92:21:0+4S", sale: "35:10:0+2S" },
+  { add: "Mzuzu", area: "Nkhata Bay District (all EPAs except Mpamba)", home: "69:21:0+4S", sale: null },
+  { add: "Mzuzu", area: "Mpamba EPA, Nkhata Bay", home: "35:10:0+2S", sale: null },
+  { add: "Kasungu", area: "All districts and EPAs", home: "92:21:0+4S", sale: "35:10:0+2S" },
+  { add: "Lilongwe", area: "All districts and EPAs", home: "92:21:0+4S", sale: "35:10:0+2S" },
+  { add: "Salima", area: "Salima District", home: "92:21:0+4S", sale: "35:10:0+2S" },
+  { add: "Salima", area: "Nkhunga and Linga EPAs, Nkhotakota", home: "69:21:0+4S", sale: null },
+  { add: "Salima", area: "Zidyana and Mwansambo EPAs, Nkhotakota", home: "92:21:0+4S", sale: "35:10:0+2S" },
+  { add: "Salima", area: "Bwanje RDP", home: "92:21:0+4S", sale: "35:10:0+2S" },
+  { add: "Machinga", area: "Mangochi District", home: "69:21:0+4S", sale: "35:10:0+2S" },
+  { add: "Machinga", area: "Namwera", home: "69:21:0+4S", sale: "35:10:0+2S" },
+  { add: "Machinga", area: "Balaka: Ulongwe and Mpilisi EPAs", home: "69:21:0+4S", sale: "35:10:0+2S" },
+  { add: "Machinga", area: "Balaka: Bazale and Phalula EPAs and Rivi-Rivi Settlement Scheme", home: "92:21:0+4S", sale: "35:10:0+2S" },
+  { add: "Machinga", area: "Machinga District", home: "69:21:0+4S", sale: "35:10:0+2S" },
+  { add: "Machinga", area: "Zomba District (all EPAs except Mtubwi and Chingale)", home: "92:21:0+4S", sale: "35:10:0+2S" },
+  { add: "Machinga", area: "Mtubwi and Chingale EPAs, Zomba", home: "69:21:0+4S", sale: "35:10:0+2S" },
+  { add: "Blantyre", area: "Shire Highlands districts", home: "92:21:0+4S", sale: "35:10:0+2S" },
+  { add: "Blantyre", area: "Blantyre District (all EPAs except Lirangwe)", home: "92:21:0+4S", sale: "35:10:0+2S" },
+  { add: "Blantyre", area: "Lirangwe EPA, Blantyre", home: "69:21:0+4S", sale: "35:10:0+2S" },
+  { add: "Blantyre", area: "Thyolo, Mulanje and Phalombe districts", home: "92:21:0+4S", sale: "35:10:0+2S" },
+  { add: "Blantyre", area: "Mwanza District", home: "69:21:0+4S", sale: "35:10:0+2S" },
+  { add: "Shire Valley", area: "Chikhwawa and Nsanje districts", home: "35:10:0+4S", sale: null },
 ];
 
-export function getFertiliserRecommendation(targetYieldTonnesPerHa) {
-  requirePositive(targetYieldTonnesPerHa, "Yield target");
-
-  const recommendation = FERTILISER_GUIDE.find(
-    (item) =>
-      targetYieldTonnesPerHa >= item.minYield &&
-      targetYieldTonnesPerHa < item.maxYield
-  );
-
-  if (!recommendation) {
-    throw new Error("No fertiliser recommendation found.");
+export function getMalawiMaizeFertiliserRecommendation({ add, area, productionPurpose }) {
+  if (!add || !area || !["home", "sale"].includes(productionPurpose)) {
+    throw new Error("Select an ADD, district/EPA area and production purpose.");
   }
-
+  const entry = MALAWI_MAIZE_FERTILISER_GUIDE.find(
+    (item) => item.add === add && item.area === area
+  );
+  if (!entry) throw new Error("No area-specific reference was found for that selection.");
+  const nutrientRecommendation = entry[productionPurpose];
   return {
-    yieldTarget: targetYieldTonnesPerHa,
-    basalKgPerHa: recommendation.basal,
-    topDressingKgPerHa: recommendation.topDressing,
-    bagSizeKg: 50,
-    source: "Malawi Maize Growers Guide",
-    note:
-      "These are general guide ranges, not a substitute for soil testing or locally validated recommendations.",
+    ...entry,
+    productionPurpose,
+    nutrientRecommendation,
+    available: nutrientRecommendation !== null,
+    source: "Guide to Agriculture Production, 2021, Table 15",
+    note: "This is a historical area-specific nutrient recommendation, not a product application rate. Confirm current advice with your local extension officer and a soil test before applying fertiliser.",
   };
 }
 
